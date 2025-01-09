@@ -1,6 +1,7 @@
 c.std = 99
 
 using c
+using c.objc
 using in
 
 c{*}: extension = c
@@ -13,14 +14,15 @@ test.target = $c.target
 tcls = $c.target.class
 tsys = $c.target.system
 
-config [bool] config.glfw.usewayland ?= false
-config [bool] config.glfw.useosmesa ?= false
-config [bool] config.glfw.vulkan ?= false
+config [bool] config.glfw.usewayland ?= true
+config [bool] config.glfw.usex11 ?= true
 config [bool] config.glfw.usehybridhpg ?= false
 
-useosmesa = (($tcls == 'linux' || $tsys == 'freebsd') && $config.glfw.useosmesa)
-usewayland = ($tcls == 'linux' && $config.glfw.usewayland == true && !$config.glfw.useosmesa)
-usex11 = ($tcls == 'linux' && !$config.glfw.usewayland && !$config.glfw.useosmesa)
 win32 = ($tcls == 'windows')
 cocoa = ($tcls == 'macos')
+linux = ($tcls == 'linux')
+unix = ($tcls == 'freebsd' || $tcls == 'linux')
+
+build_wayland = ($unix && $config.glfw.usewayland)
+build_x11 = ($unix && $config.glfw.usex11)
 hybridhpg = ($win32 && $config.glfw.usehybridhpg)
